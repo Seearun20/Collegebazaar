@@ -44,6 +44,38 @@ body {
   color: white;
 }
 
+/* Add this to your global CSS file */
+.profile-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.nav-links li {
+  margin-right: 20px;
+  list-style: none;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: black;
+}
+
+.logout-btn {
+  background-color: red;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: darkred;
+}
+
 
 .hero-overlay {
   background: rgba(0, 0, 0, 0.5);
@@ -56,6 +88,10 @@ body {
 .hero-content {
   text-align: center;
 }
+.red-letter {
+  color: red;
+}
+
 
 .hero-buttons .btn {
   padding: 10px 20px;
