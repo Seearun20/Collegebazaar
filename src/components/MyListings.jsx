@@ -34,7 +34,7 @@ export default function MyListings() {
         }
 
         const data = await response.json();
-        setProducts(data);
+        setProducts(data.products);
       } catch (err) {
         console.error('Fetch error:', err);
         setError(err.message || 'An error occurred while fetching your listings');
@@ -58,7 +58,7 @@ export default function MyListings() {
         throw new Error('Please log in to view bids');
       }
 
-      const response = await fetch(`http://localhost:5000/api/bid/all/${productId}`, {
+      const response = await fetch(`http://localhost:5000/api/bid/product/${productId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -106,7 +106,7 @@ export default function MyListings() {
         throw new Error('Please log in to delete a product');
       }
 
-      const response = await fetch(`http://localhost:5000/api/seller/${productId}`, {
+      const response = await fetch(`http://localhost:5000/api/seller/delete-product/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -146,23 +146,23 @@ export default function MyListings() {
       ) : (
         <div className="listing-grid">
           {products.map((item) => (
-            <div key={item.id} className="listing-card">
+            <div key={item.product_id} className="listing-card">
               <div className="image-container">
-                <img src={item.image} alt={item.title} />
+                <img src={item.image} alt={item.name} />
                 <span className="category-badge">{item.category}</span>
               </div>
               <div className="card-content">
-                <h2>{item.title}</h2>
-                <p className="price">₹{item.price.toLocaleString()}</p>
+                <h2>{item.name}</h2>
+                <p className="price">₹{item.asking_price.toLocaleString()}</p>
                 <div className="button-group">
                   <button
-                    onClick={() => fetchBids(item.id)}
+                    onClick={() => fetchBids(item.product_id)}
                     className="btn"
                   >
                     Check Biddings
                   </button>
                   <button
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDelete(item.product_id)}
                     className="btn delete-btn"
                   >
                     Remove Product

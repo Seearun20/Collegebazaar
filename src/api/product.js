@@ -1,4 +1,3 @@
-// api/product.js
 const BASE_URL = "http://localhost:5000/api/products";
 
 export async function getProductByName(name) {

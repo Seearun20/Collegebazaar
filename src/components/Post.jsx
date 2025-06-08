@@ -62,7 +62,7 @@ export default function Post() {
     try {
       // Step 1: Post the product data
       const productRes = await axios.post(
-        'http://localhost:5000/api/seller/add',
+        'http://localhost:5000/api/seller/add-product',
         {
           name: formData.name,
           description: formData.description,

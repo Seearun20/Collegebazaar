@@ -63,7 +63,7 @@ export async function editProfile(updatedData) {
   const token = localStorage.getItem('token');
 
   try {
-    const response = await fetch(`${BASE_URL}/edit-profile`, { // Changed from /profile to /edit-profile
+    const response = await fetch(`${BASE_URL}/edit-profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

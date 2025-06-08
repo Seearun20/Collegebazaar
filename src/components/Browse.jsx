@@ -24,7 +24,7 @@ export default function Browse() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout
 
-        const response = await fetch('http://localhost:5000/api/seller', {
+        const response = await fetch('http://localhost:5000/api/seller/get-active-products', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -39,8 +39,7 @@ export default function Browse() {
         }
 
         const data = await response.json();
-        console.log('Products fetched:', data);
-        setProducts(data);
+        setProducts(data.products);
       } catch (err) {
         console.error('Fetch error:', err.message);
         if (err.name === 'AbortError') {
@@ -57,7 +56,7 @@ export default function Browse() {
 
   const filteredListings = products.filter(
     (item) => selectedCategory === 'All' || item.category === selectedCategory
-  ).filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  ).filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   useEffect(() => {
     setSelectedCategory(initialCategory);
@@ -89,13 +88,13 @@ export default function Browse() {
           {filteredListings.map((item) => (
             <div key={item.id} className="listing-card">
               <div className="image-container">
-                <img src={item.image} alt={item.title} />
+                <img src={item.image} alt={item.name} />
                 <span className="category-badge">{item.category}</span>
               </div>
               <div className="card-content">
-                <h2>{item.title}</h2>
-                <p className="price">₹{item.price.toLocaleString()}</p>
-                <Link to={`/product?name=${encodeURIComponent(item.title)}`} className="btn">View Details</Link>
+                <h2>{item.name}</h2>
+                <p className="price">₹{item.asking_price.toLocaleString()}</p>
+                <Link to={`/product?product_id=${encodeURIComponent(item.product_id)}`} className="btn">View Details</Link>
               </div>
             </div>
           ))}

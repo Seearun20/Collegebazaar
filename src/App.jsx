@@ -65,7 +65,8 @@ export default function App() {
 
   const fetchProfile = async () => {
     try {
-      const profile = await getUserProfile();
+      let profile = await getUserProfile();
+      profile = profile.user
       setUserProfile(profile);
       setEditForm({
         name: profile.name,

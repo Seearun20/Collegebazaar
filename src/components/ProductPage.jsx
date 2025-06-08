@@ -58,11 +58,11 @@ const styles = `
 const ProductPage = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const productName = params.get('name') || 'Unknown Product';
+  const productId = params.get('product_id') || 'Unknown Product';
 
   const [product, setProduct] = useState({
-    id: null,
-    title: productName,
+    id: productId,
+    title: 'Not found',
     description: 'Loading...',
     price: 0,
     image: '/assets/default.png',
@@ -85,7 +85,7 @@ const ProductPage = () => {
         setError(null);
 
         // Fetch product details
-        const productResponse = await fetch('http://localhost:5000/api/seller', {
+        const productResponse = await fetch(`http://localhost:5000/api/seller/get-product-by-id/${product.id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -97,21 +97,21 @@ const ProductPage = () => {
         }
 
         const products = await productResponse.json();
-        const foundProduct = products.find((p) => p.title === productName);
+        const foundProduct = products.product;
         if (!foundProduct) {
           throw new Error(`Product "${productName}" not found`);
         }
 
         setProduct({
-          id: foundProduct.id,
-          title: foundProduct.title,
+          id: foundProduct.product_id,
+          title: foundProduct.name,
           description: foundProduct.description || 'No description available.',
-          price: foundProduct.price || 0,
+          price: foundProduct.asking_price || 0,
           image: foundProduct.image || '/assets/default.png',
         });
 
         // Fetch the highest bid
-        const highestBidResponse = await fetch(`http://localhost:5000/api/bid/highest/${foundProduct.id}`, {
+        const highestBidResponse = await fetch(`http://localhost:5000/api/bid/product/${foundProduct.product_id}/highest`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -122,14 +122,14 @@ const ProductPage = () => {
           const highestBidData = await highestBidResponse.json();
           setCurrentBid(highestBidData.highest_bid.amount || foundProduct.price);
         } else if (highestBidResponse.status === 404) {
-          setCurrentBid(foundProduct.price || 0);
+          setCurrentBid('No bids yet');
         } else {
           throw new Error('Failed to fetch highest bid');
         }
 
         // Fetch queries/comments
-        if (foundProduct.id) {
-          const queryResponse = await fetch(`http://localhost:5000/api/queries/product/${foundProduct.id}`, {
+        if (foundProduct.product_id) {
+          const queryResponse = await fetch(`http://localhost:5000/api/query/${foundProduct.product_id}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -144,6 +144,7 @@ const ProductPage = () => {
             }
           } else {
             const queryData = await queryResponse.json();
+            console.log(queryData);
             setComments(queryData.queries || []);
           }
         }
@@ -156,7 +157,7 @@ const ProductPage = () => {
     };
 
     fetchProductAndQueries();
-  }, [productName]);
+  }, [productId]);
 
   const placeBid = async () => {
     setBidLoading(true);
@@ -177,7 +178,7 @@ const ProductPage = () => {
     }
 
     try {
-      const bidResponse = await fetch(`http://localhost:5000/api/bid/${product.id}`, {
+      const bidResponse = await fetch(`http://localhost:5000/api/bid/place-bid/${product.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -192,7 +193,7 @@ const ProductPage = () => {
       }
 
       // Fetch updated highest bid
-      const highestBidResponse = await fetch(`http://localhost:5000/api/bid/highest/${product.id}`, {
+      const highestBidResponse = await fetch(`http://localhost:5000/api/bid/product/${product.id}/highest`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -225,7 +226,7 @@ const ProductPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/queries/${product.id}`, {
+      const response = await fetch(`http://localhost:5000/api/query/${product.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -242,7 +243,7 @@ const ProductPage = () => {
       const data = await response.json();
       setComments([...comments, {
         query_id: data.query.query_id,
-        text: data.query.query,
+        query: data.query.query,
         customer_name: data.query.customer_name || 'Anonymous',
       }]);
       setCommentInput('');
@@ -258,7 +259,7 @@ const ProductPage = () => {
     const newComment = prompt('Edit your query:', comment.text);
     if (newComment && newComment.trim()) {
       try {
-        const response = await fetch(`http://localhost:5000/api/queries/${comment.query_id}`, {
+        const response = await fetch(`http://localhost:5000/api/query/edit/${comment.query_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -282,7 +283,7 @@ const ProductPage = () => {
     if (window.confirm('Are you sure?')) {
       const comment = comments[index];
       try {
-        const response = await fetch(`http://localhost:5000/api/queries/${comment.query_id}`, {
+        const response = await fetch(`http://localhost:5000/api/query/delete/${comment.query_id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -319,9 +320,10 @@ const ProductPage = () => {
           </div>
           <div className="product-details">
             <h1>{product.title}</h1>
-            <p><span>Model:</span> N/A</p>
             <p><span>Description:</span> {product.description}</p>
-            <p><span>Current Highest Bid:</span> ₹{currentBid.toLocaleString()}</p>
+            <p><span>Current Highest Bid:</span> {typeof currentBid === 'number'
+            ? `₹${currentBid.toLocaleString()}`
+            : currentBid}</p>
             <p><span>Asking Price:</span> ₹{product.price.toLocaleString()}</p>
           </div>
         </section>
@@ -362,7 +364,7 @@ const ProductPage = () => {
           <div className="comments-list">
             {comments.length === 0 ? <p className="no-comments">No queries yet.</p> : comments.map((comment, index) => (
               <div key={comment.query_id || index} className="comment">
-                <p><strong>{comment.customer_name}:</strong> {comment.text}</p>
+                <p><strong>{comment.customer_name || 'Anonymous'}:</strong> {comment.query}</p>
                 <div className="comment-actions">
                   <button className="btn secondary small" onClick={() => editComment(index)}>Edit</button>
                   <button className="btn secondary small" onClick={() => deleteComment(index)}>Delete</button>
