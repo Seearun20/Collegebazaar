@@ -33,6 +33,10 @@ export default function AuthPage({ defaultTab = "login", setIsLoggedIn }) {
         setError("Invalid email format");
         return false;
       }
+      if (!formData.email.endsWith("@iiita.ac.in")) {
+        setError("Email must be from @iiita.ac.in domain");
+        return false;
+      }
     } else if (!showOtp) {
       if (
         !formData.name ||
@@ -49,6 +53,11 @@ export default function AuthPage({ defaultTab = "login", setIsLoggedIn }) {
         setError("Invalid email format");
         return false;
       }
+      if (!formData.email.endsWith("@iiita.ac.in")) {
+        setError("Email must be from @iiita.ac.in domain");
+        return false;
+      }
+    
       if (!/^\d{10}$/.test(formData.phone_no)) {
         setError("Phone number must be 10 digits");
         return false;
@@ -126,7 +135,7 @@ export default function AuthPage({ defaultTab = "login", setIsLoggedIn }) {
           <div className="auth-header">
             <div className="logo">
               <span className="logo-icon">🎓</span>
-              IIITA<span className="logo-accent">B</span>azaar
+              College<span className="logo-accent">B</span>azaar
             </div>
             <div className="auth-tabs">
               <button
@@ -225,7 +234,7 @@ export default function AuthPage({ defaultTab = "login", setIsLoggedIn }) {
               </>
             ) : (
               <>
-                <h2>Join IIITA Bazaar</h2>
+                <h2>Join CollegeBazaar</h2>
                 <div className="form-group">
                   <label htmlFor="name">Full Name</label>
                   <input

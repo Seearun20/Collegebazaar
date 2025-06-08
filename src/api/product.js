@@ -1,24 +1,23 @@
-// server.js or routes/products.js
-const express = require('express');
-const router = express.Router();
-const pool = require('../db'); // Your PostgreSQL connection pool
-const authenticateToken = require('../middleware/auth'); // JWT middleware
+// api/product.js
+const BASE_URL = "http://localhost:5000/api/products";
 
-// Middleware to verify JWT and extract user_id
-router.get('/active-count', authenticateToken, async (req, res) => {
+export async function getProductByName(name) {
   try {
-    const userId = req.user.user_id; // Extracted from JWT
-    const query = `
-      SELECT COUNT(*) AS count
-      FROM products
-      WHERE user_id = $1 AND sold = false
-    `;
-    const result = await pool.query(query, [userId]);
-    res.json({ count: parseInt(result.rows[0].count, 10) });
-  } catch (err) {
-    console.error('Error fetching active listings count:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+    const response = await fetch(`${BASE_URL}/${encodeURIComponent(name)}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-module.exports = router;
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to fetch product");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching product:", error.message);
+    throw error;
+  }
+}

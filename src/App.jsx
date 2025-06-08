@@ -293,7 +293,7 @@ export default function App() {
                               </div>
                             </div>
 
-                            <div className="profile-stats">
+                            {/* <div className="profile-stats">
                               <div className="stat">
                                 <span className="stat-number">0</span>
                                 <span className="stat-label">Active Listings</span>
@@ -302,7 +302,7 @@ export default function App() {
                                 <span className="stat-number">0</span>
                                 <span className="stat-label">Sold Items</span>
                               </div>
-                            </div>
+                            </div> */}
 
                             <div className="profile-actions">
                               <button className="btn-edit" onClick={handleEditProfile}>

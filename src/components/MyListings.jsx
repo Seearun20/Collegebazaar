@@ -181,9 +181,9 @@ export default function MyListings() {
             <div className="modal-header">
               <h2>Bids for {selectedProduct.title}</h2>
               <div>
-                <button className="btn debug-btn" onClick={() => console.log('Current bids:', bids)}>
+                {/* <button className="btn debug-btn" onClick={() => console.log('Current bids:', bids)}>
                   Debug Bids
-                </button>
+                </button> */}
                 <button className="close-btn" onClick={closeModal}>
                   ×
                 </button>
