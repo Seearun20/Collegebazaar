@@ -7,6 +7,7 @@ import AuthPage from './components/AuthPage';
 import ProductPage from './components/ProductPage';
 import MyListings from './components/MyListings';
 import AdminDashboard from './components/AdminDashboard';
+import SellerProductPage from './components/SellerProductPage';
 import { getUserProfile, editProfile } from './api/auth';
 
 export default function App() {
@@ -347,6 +348,7 @@ export default function App() {
           <Route path="/login" element={<AuthPage defaultTab="login" setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<AuthPage defaultTab="signup" setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/product" element={<ProductPage />} />
+          <Route path="/seller/product" element={<SellerProductPage />} />
           <Route path="/my-listings" element={isLoggedIn ? <MyListings /> : <Navigate to="/login" />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
