@@ -40,6 +40,8 @@ const styles = `
   .comment p { font-size: 1rem; color: #2d2d2d; margin: 0 0 12px; }
   .dark-mode .comment p { color: #e0e0e0; }
   .comment .comment-actions { display: flex; gap: 12px; justify-content: flex-end; }
+  .reply { font-size: 0.95rem; color: #666; margin-left: 20px; font-style: italic; border-left: 2px solid #ff4757; padding-left: 10px; }
+  .dark-mode .reply { color: #bbb; border-left-color: #61dafb; }
   .btn { background: linear-gradient(45deg, #ff4757, #ff6b7b); color: #ffffff; padding: 12px 24px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(255,71,87,0.3); }
   .btn:hover { background: linear-gradient(45deg, #ff2e43, #ff5b6b); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,71,87,0.5); }
   .btn.secondary { background: linear-gradient(45deg, #e3f2fd, #bbdefb); color: #1e88e5; box-shadow: 0 2px 8px rgba(30,136,229,0.3); }
@@ -51,8 +53,24 @@ const styles = `
   .dark-mode .btn.secondary:hover { background: linear-gradient(45deg, #3a3a3a, #4a4a4a); box-shadow: 0 4px 12px rgba(255,255,255,0.3); }
   .loading, .error { text-align: center; padding: 40px; background: #f8f9fa; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 20px; }
   .dark-mode .loading, .dark-mode .error { background: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-  @media (max-width: 768px) { .product-page { margin: 24px 16px; padding: 24px; } .product-container { flex-direction: column; gap: 24px; } .product-image { max-width: 100%; } .product-details h1 { font-size: 1.8rem; } .bidding-container h2, .comments-container h2 { font-size: 1.6rem; } .bidding-actions { flex-direction: column; gap: 12px; } .btn { width: 100%; } }
-  @media (max-width: 480px) { .product-details h1 { font-size: 1.6rem; } .product-details p { font-size: 1rem; } .bidding-container h2, .comments-container h2 { font-size: 1.4rem; } input, textarea { font-size: 0.9rem; } .btn { font-size: 0.9rem; padding: 10px; } }
+  @media (max-width: 768px) { 
+    .product-page { margin: 24px 16px; padding: 24px; } 
+    .product-container { flex-direction: column; gap: 24px; } 
+    .product-image { max-width: 100%; } 
+    .product-details h1 { font-size: 1.8rem; } 
+    .bidding-container h2, .comments-container h2 { font-size: 1.6rem; } 
+    .bidding-actions { flex-direction: column; gap: 12px; } 
+    .btn { width: 100%; } 
+    .reply { margin-left: 10px; padding-left: 8px; }
+  }
+  @media (max-width: 480px) { 
+    .product-details h1 { font-size: 1.6rem; } 
+    .product-details p { font-size: 1rem; } 
+    .bidding-container h2, .comments-container h2 { font-size: 1.4rem; } 
+    input, textarea { font-size: 0.9rem; } 
+    .btn { font-size: 0.9rem; padding: 10px; } 
+    .reply { font-size: 0.85rem; margin-left: 8px; padding-left: 6px; }
+  }
 `;
 
 const ProductPage = () => {
@@ -72,7 +90,8 @@ const ProductPage = () => {
   const [bidError, setBidError] = useState('');
   const [bidSuccess, setBidSuccess] = useState('');
   const [bidLoading, setBidLoading] = useState(false);
-  const [comments, setComments] = useState([]);
+  const [userQueries, setUserQueries] = useState([]);
+  const [otherQueries, setOtherQueries] = useState([]);
   const [commentInput, setCommentInput] = useState('');
   const [commentError, setCommentError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -85,7 +104,7 @@ const ProductPage = () => {
         setError(null);
 
         // Fetch product details
-        const productResponse = await fetch(`http://localhost:5000/api/seller/get-product-by-id/${product.id}`, {
+        const productResponse = await fetch(`http://localhost:5000/api/seller/get-product-by-id/${productId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -93,13 +112,13 @@ const ProductPage = () => {
         });
 
         if (!productResponse.ok) {
-          throw new Error(`Failed to fetch products: ${productResponse.status}`);
+          throw new Error(`Failed to fetch product: ${productResponse.status}`);
         }
 
         const products = await productResponse.json();
         const foundProduct = products.product;
         if (!foundProduct) {
-          throw new Error(`Product "${productName}" not found`);
+          throw new Error('Product not found');
         }
 
         setProduct({
@@ -127,26 +146,25 @@ const ProductPage = () => {
           throw new Error('Failed to fetch highest bid');
         }
 
-        // Fetch queries/comments
-        if (foundProduct.product_id) {
-          const queryResponse = await fetch(`http://localhost:5000/api/query/${foundProduct.product_id}`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-            },
-          });
+        // Fetch queries
+        const queryResponse = await fetch(`http://localhost:5000/api/query/${foundProduct.product_id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+          },
+        });
 
-          if (!queryResponse.ok) {
-            if (queryResponse.status === 404) {
-              setComments([]);
-            } else {
-              throw new Error(`Failed to fetch queries: ${queryResponse.status}`);
-            }
+        if (!queryResponse.ok) {
+          if (queryResponse.status === 404) {
+            setUserQueries([]);
+            setOtherQueries([]);
           } else {
-            const queryData = await queryResponse.json();
-            console.log(queryData);
-            setComments(queryData.queries || []);
+            throw new Error(`Failed to fetch queries: ${queryResponse.status}`);
           }
+        } else {
+          const queryData = await queryResponse.json();
+          setUserQueries(queryData.userQueries || []);
+          setOtherQueries(queryData.otherQueries || []);
         }
       } catch (err) {
         console.error('Fetch error:', err);
@@ -241,10 +259,11 @@ const ProductPage = () => {
       }
 
       const data = await response.json();
-      setComments([...comments, {
+      setUserQueries([...userQueries, {
         query_id: data.query.query_id,
         query: data.query.query,
         customer_name: data.query.customer_name || 'Anonymous',
+        reply: data.query.reply || null,
       }]);
       setCommentInput('');
       setCommentError('');
@@ -255,8 +274,8 @@ const ProductPage = () => {
   };
 
   const editComment = async (index) => {
-    const comment = comments[index];
-    const newComment = prompt('Edit your query:', comment.text);
+    const comment = userQueries[index];
+    const newComment = prompt('Edit your query:', comment.query);
     if (newComment && newComment.trim()) {
       try {
         const response = await fetch(`http://localhost:5000/api/query/edit/${comment.query_id}`, {
@@ -267,11 +286,18 @@ const ProductPage = () => {
           },
           body: JSON.stringify({ query: newComment.trim() }),
         });
-        if (!response.ok) throw new Error('Failed to update');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update query');
+        }
         const data = await response.json();
-        const updatedComments = [...comments];
-        updatedComments[index] = { ...comment, text: data.query.query, query: data.query.query };
-        setComments(updatedComments);
+        const updatedQueries = [...userQueries];
+        updatedQueries[index] = { 
+          ...comment, 
+          query: data.query.query,
+          reply: data.query.reply || null,
+        };
+        setUserQueries(updatedQueries);
       } catch (err) {
         console.error('Edit comment error:', err);
         alert('Failed to update query.');
@@ -280,8 +306,8 @@ const ProductPage = () => {
   };
 
   const deleteComment = async (index) => {
-    if (window.confirm('Are you sure?')) {
-      const comment = comments[index];
+    if (window.confirm('Are you sure you want to delete this query?')) {
+      const comment = userQueries[index];
       try {
         const response = await fetch(`http://localhost:5000/api/query/delete/${comment.query_id}`, {
           method: 'DELETE',
@@ -289,8 +315,11 @@ const ProductPage = () => {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
           },
         });
-        if (!response.ok) throw new Error('Failed to delete');
-        setComments(comments.filter((_, i) => i !== index));
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to delete query');
+        }
+        setUserQueries(userQueries.filter((_, i) => i !== index));
       } catch (err) {
         console.error('Delete comment error:', err);
         alert('Failed to delete query.');
@@ -322,14 +351,16 @@ const ProductPage = () => {
             <h1>{product.title}</h1>
             <p><span>Description:</span> {product.description}</p>
             <p><span>Current Highest Bid:</span> {typeof currentBid === 'number'
-            ? `₹${currentBid.toLocaleString()}`
-            : currentBid}</p>
+              ? `₹${currentBid.toLocaleString()}`
+              : currentBid}</p>
             <p><span>Asking Price:</span> ₹{product.price.toLocaleString()}</p>
           </div>
         </section>
         <section className="bidding-container">
           <h2>Place Your Bid</h2>
-          <p>Current Highest Bid: ₹{currentBid.toLocaleString()}</p>
+          <p>Current Highest Bid: {typeof currentBid === 'number'
+            ? `₹${currentBid.toLocaleString()}`
+            : currentBid}</p>
           <div className="bidding-actions">
             <input
               type="number"
@@ -362,15 +393,34 @@ const ProductPage = () => {
           </div>
           {commentError && <p className="error-message">{commentError}</p>}
           <div className="comments-list">
-            {comments.length === 0 ? <p className="no-comments">No queries yet.</p> : comments.map((comment, index) => (
-              <div key={comment.query_id || index} className="comment">
-                <p><strong>{comment.customer_name || 'Anonymous'}:</strong> {comment.query}</p>
-                <div className="comment-actions">
-                  <button className="btn secondary small" onClick={() => editComment(index)}>Edit</button>
-                  <button className="btn secondary small" onClick={() => deleteComment(index)}>Delete</button>
-                </div>
-              </div>
-            ))}
+            {userQueries.length === 0 && otherQueries.length === 0 ? (
+              <p className="no-comments">No queries yet.</p>
+            ) : (
+              <>
+                {userQueries.map((comment, index) => (
+                  <div key={comment.query_id} className="comment">
+                    <p><strong>{comment.customer_name || 'Anonymous'}:</strong> {comment.query}</p>
+                    {comment.reply && (
+                      <p className="reply"><strong>Seller Reply:</strong> {comment.reply}</p>
+                    )}
+                    {!comment.reply && (
+                      <div className="comment-actions">
+                        <button className="btn secondary small" onClick={() => editComment(index)}>Edit</button>
+                        <button className="btn secondary small" onClick={() => deleteComment(index)}>Delete</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {otherQueries.map((comment) => (
+                  <div key={comment.query_id} className="comment">
+                    <p><strong>{comment.customer_name || 'Anonymous'}:</strong> {comment.query}</p>
+                    {comment.reply && (
+                      <p className="reply"><strong>Seller Reply:</strong> {comment.reply}</p>
+                    )}
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </section>
       </div>

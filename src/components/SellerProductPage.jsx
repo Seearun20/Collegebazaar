@@ -151,7 +151,8 @@ const SellerProductPage = () => {
           }
         } else {
           const queriesData = await queriesResponse.json();
-          setQueries(queriesData.queries || []);
+          console.log(queriesData);
+          setQueries(queriesData.otherQueries || []);
         }
       } catch (err) {
         console.error('Fetch error:', err);
