@@ -6,6 +6,7 @@ import Post from './components/Post';
 import AuthPage from './components/AuthPage';
 import ProductPage from './components/ProductPage';
 import MyListings from './components/MyListings';
+import AdminDashboard from './components/AdminDashboard';
 import { getUserProfile, editProfile } from './api/auth';
 
 export default function App() {
@@ -347,6 +348,7 @@ export default function App() {
           <Route path="/signup" element={<AuthPage defaultTab="signup" setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/my-listings" element={isLoggedIn ? <MyListings /> : <Navigate to="/login" />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </div>
 
@@ -362,11 +364,11 @@ export default function App() {
           <div className="contact-popup-content">
             <h3>Contact Our Admins</h3>
             <ul>
-              <li><a href="mailto:IIT2023080@iiita.ac.in">IIT2023080@iiita.ac.in</a></li>
               <li><a href="mailto:IIT2023077@iiita.ac.in">IIT2023077@iiita.ac.in</a></li>
-              <li><a href="mailto:IIT2023079@iiita.ac.in">IIT2023079@iiita.ac.in</a></li>
-              <li><a href="mailto:IIT2023083@iiita.ac.in">IIT2023083@iiita.ac.in</a></li>
               <li><a href="mailto:IIT2023078@iiita.ac.in">IIT2023078@iiita.ac.in</a></li>
+              <li><a href="mailto:IIT2023079@iiita.ac.in">IIT2023079@iiita.ac.in</a></li>
+              <li><a href="mailto:IIT2023080@iiita.ac.in">IIT2023080@iiita.ac.in</a></li>
+              <li><a href="mailto:IIT2023083@iiita.ac.in">IIT2023083@iiita.ac.in</a></li>
             </ul>
             <button onClick={toggleContactPopup} className="close-popup">Close</button>
           </div>
