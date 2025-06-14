@@ -8,6 +8,7 @@ import ProductPage from './components/ProductPage';
 import MyListings from './components/MyListings';
 import AdminDashboard from './components/AdminDashboard';
 import SellerProductPage from './components/SellerProductPage';
+import MyBids from './components/MyBids'; // New import
 import { getUserProfile, editProfile } from './api/auth';
 
 export default function App() {
@@ -39,7 +40,6 @@ export default function App() {
     document.body.classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
-  // Close drawer on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -68,7 +68,7 @@ export default function App() {
   const fetchProfile = async () => {
     try {
       let profile = await getUserProfile();
-      profile = profile.user
+      profile = profile.user;
       setUserProfile(profile);
       setEditForm({
         name: profile.name,
@@ -93,6 +93,11 @@ export default function App() {
 
   const handleMyListingsClick = () => {
     navigate('/my-listings');
+    setShowProfile(false);
+  };
+
+  const handleMyBidsClick = () => {
+    navigate('/my-bids');
     setShowProfile(false);
   };
 
@@ -296,23 +301,15 @@ export default function App() {
                               </div>
                             </div>
 
-                            {/* <div className="profile-stats">
-                              <div className="stat">
-                                <span className="stat-number">0</span>
-                                <span className="stat-label">Active Listings</span>
-                              </div>
-                              <div className="stat">
-                                <span className="stat-number">0</span>
-                                <span className="stat-label">Sold Items</span>
-                              </div>
-                            </div> */}
-
                             <div className="profile-actions">
                               <button className="btn-edit" onClick={handleEditProfile}>
                                 <span className="btn-icon">✏️</span> Edit Profile
                               </button>
                               <button className="btn-view-listings" onClick={handleMyListingsClick}>
                                 <span className="btn-icon">📋</span> My Listings
+                              </button>
+                              <button className="btn-view-bids" onClick={handleMyBidsClick}>
+                                <span className="btn-icon">💰</span> My Bids
                               </button>
                             </div>
                           </>
@@ -350,6 +347,7 @@ export default function App() {
           <Route path="/product" element={<ProductPage />} />
           <Route path="/seller/product" element={<SellerProductPage />} />
           <Route path="/my-listings" element={isLoggedIn ? <MyListings /> : <Navigate to="/login" />} />
+          <Route path="/my-bids" element={isLoggedIn ? <MyBids /> : <Navigate to="/login" />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </div>
@@ -449,6 +447,11 @@ export default function App() {
           color: #ffffff !important;
         }
 
+        .dark-mode .btn-view-bids {
+          background: linear-gradient(45deg, #d97706, #f59e0b) !important;
+          color: #ffffff !important;
+        }
+
         .dark-mode .profile-actions button:hover {
           background: #64748b;
           transform: translateY(-2px);
@@ -487,10 +490,8 @@ export default function App() {
           filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
         }
 
-        .logo-accent {
+        .red-letter {
           color: #ef4444;
-          font-weight: 900;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .nav-links {
@@ -900,41 +901,6 @@ export default function App() {
           color: #f1f5f9;
         }
 
-        .profile-stats {
-          display: flex;
-          justify-content: center;
-          gap: 2rem;
-          padding: 1.5rem 2rem;
-          border-top: 1px solid #e2e8f0;
-          border-bottom: 1px solid #e2e8f0;
-          margin: 2rem 0;
-        }
-
-        .dark-mode .profile-stats {
-          border-color: #475569;
-        }
-
-        .stat {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .stat-number {
-          font-size: 2rem;
-          font-weight: 800;
-          color: #ef4444;
-        }
-
-        .stat-label {
-          font-size: 0.95rem;
-          color: #6b7280;
-        }
-
-        .dark-mode .stat-label {
-          color: #cbd5e1;
-        }
-
         .profile-actions {
           padding: 0 2rem;
           display: flex;
@@ -985,6 +951,15 @@ export default function App() {
 
         .btn-view-listings:hover {
           background: linear-gradient(45deg, #bbf7d0, #86efac) !important;
+        }
+
+        .btn-view-bids {
+          background: linear-gradient(45deg, #fef3c7, #fde68a) !important;
+          color: #d97706 !important;
+        }
+
+        .btn-view-bids:hover {
+          background: linear-gradient(45deg, #fde68a, #fcd34d) !important;
         }
 
         .drawer-footer {
@@ -1077,59 +1052,6 @@ export default function App() {
           transform: translateY(-1px);
         }
 
-        .hero {
-          position: relative;
-          background: url('/assets/bgim.webp') no-repeat center center/cover;
-          padding: 6rem 1.5rem;
-          text-align: center;
-          border-radius: 16px;
-          margin-bottom: 3rem;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-          overflow: hidden;
-        }
-
-        .hero::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.5);
-          z-index: 1;
-        }
-
-        .dark-mode .hero::before {
-          background: rgba(0, 0, 0, 0.7);
-        }
-
-        .hero-overlay {
-          position: relative;
-          z-index: 2;
-        }
-
-        .hero-content h1 {
-          font-size: 3rem;
-          font-weight: 900;
-          color: #ffffff;
-          margin-bottom: 1.25rem;
-          text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-        }
-
-        .hero-content p {
-          font-size: 1.5rem;
-          color: #e5e7eb;
-          margin-bottom: 2rem;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero-buttons {
-          display: flex;
-          justify-content: center;
-          gap: 1.5rem;
-          margin-top: 2rem;
-        }
-
         .btn {
           background: linear-gradient(45deg, #ef4444, #f87171);
           color: #ffffff !important;
@@ -1181,94 +1103,6 @@ export default function App() {
         .dark-mode .btn.secondary:hover {
           background: linear-gradient(45deg, #475569, #64748b);
           box-shadow: 0 6px 16px rgba(255, 255, 255, 0.4);
-        }
-
-        .features {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
-          margin: 3rem 0;
-        }
-
-        .feature-card {
-          background: #ffffff;
-          border-radius: 16px;
-          padding: 2rem;
-          text-align: center;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .feature-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .dark-mode .feature-card {
-          background: #334155;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
-        }
-
-        .feature-card h3 {
-          font-size: 1.75rem;
-          font-weight: 800;
-          color: #1f2937;
-          margin-bottom: 1rem;
-        }
-
-        .dark-mode .feature-card h3 {
-          color: #f1f5f9;
-        }
-
-        .feature-card p {
-          font-size: 1.1rem;
-          color: #6b7280;
-        }
-
-        .dark-mode .feature-card p {
-          color: #cbd5e1;
-        }
-
-        .shop-by-category {
-          margin: 3rem 0;
-        }
-
-        .shop-heading {
-          font-size: 2.5rem;
-          font-weight: 900;
-          text-align: center;
-          color: #1f2937;
-          margin-bottom: 2rem;
-        }
-
-        .dark-mode .shop-heading {
-          color: #f1f5f9;
-        }
-
-        .category-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 1.5rem;
-        }
-
-        .category-card {
-          position: relative;
-          border-radius: 16px;
-          overflow: hidden;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .category-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .category-img {
-          width: 100%;
-          height: 180px;
-          object-fit: cover;
-          display: block;
         }
 
         .footer {
@@ -1434,23 +1268,6 @@ export default function App() {
             padding: 2rem 1rem;
           }
 
-          .hero {
-            padding: 4rem 1rem;
-          }
-
-          .hero-content h1 {
-            font-size: 2.5rem;
-          }
-
-          .hero-buttons {
-            flex-direction: column;
-            gap: 1rem;
-          }
-
-          .features {
-            grid-template-columns: 1fr;
-          }
-
           .footer-content {
             flex-direction: column;
             gap: 1rem;
@@ -1471,18 +1288,6 @@ export default function App() {
           }
 
           .logo-icon {
-            font-size: 2rem;
-          }
-
-          .hero-content h1 {
-            font-size: 2rem;
-          }
-
-          .hero-content p {
-            font-size: 1.25rem;
-          }
-
-          .shop-heading {
             font-size: 2rem;
           }
 
