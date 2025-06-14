@@ -901,41 +901,6 @@ export default function App() {
           color: #f1f5f9;
         }
 
-        .profile-stats {
-          display: flex;
-          justify-content: center;
-          gap: 2rem;
-          padding: 1.5rem 2rem;
-          border-top: 1px solid #e2e8f0;
-          border-bottom: 1px solid #e2e8f0;
-          margin: 2rem 0;
-        }
-
-        .dark-mode .profile-stats {
-          border-color: #475569;
-        }
-
-        .stat {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .stat-number {
-          font-size: 2rem;
-          font-weight: 800;
-          color: #ef4444;
-        }
-
-        .stat-label {
-          font-size: 0.95rem;
-          color: #6b7280;
-        }
-
-        .dark-mode .stat-label {
-          color: #cbd5e1;
-        }
-
         .profile-actions {
           padding: 0 2rem;
           display: flex;
@@ -1087,59 +1052,6 @@ export default function App() {
           transform: translateY(-1px);
         }
 
-        .hero {
-          position: relative;
-          background: url('/assets/bgim.webp') no-repeat center center/cover;
-          padding: 6rem 1.5rem;
-          text-align: center;
-          border-radius: 16px;
-          margin-bottom: 3rem;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-          overflow: hidden;
-        }
-
-        .hero::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.5);
-          z-index: 1;
-        }
-
-        .dark-mode .hero::before {
-          background: rgba(0, 0, 0, 0.7);
-        }
-
-        .hero-overlay {
-          position: relative;
-          z-index: 2;
-        }
-
-        .hero-content h1 {
-          font-size: 3rem;
-          font-weight: 900;
-          color: #ffffff;
-          margin-bottom: 1.25rem;
-          text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-        }
-
-        .hero-content p {
-          font-size: 1.5rem;
-          color: #e5e7eb;
-          margin-bottom: 2rem;
-          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero-buttons {
-          display: flex;
-          justify-content: center;
-          gap: 1.5rem;
-          margin-top: 2rem;
-        }
-
         .btn {
           background: linear-gradient(45deg, #ef4444, #f87171);
           color: #ffffff !important;
@@ -1191,94 +1103,6 @@ export default function App() {
         .dark-mode .btn.secondary:hover {
           background: linear-gradient(45deg, #475569, #64748b);
           box-shadow: 0 6px 16px rgba(255, 255, 255, 0.4);
-        }
-
-        .features {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 2rem;
-          margin: 3rem 0;
-        }
-
-        .feature-card {
-          background: #ffffff;
-          border-radius: 16px;
-          padding: 2rem;
-          text-align: center;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .feature-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .dark-mode .feature-card {
-          background: #334155;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
-        }
-
-        .feature-card h3 {
-          font-size: 1.75rem;
-          font-weight: 800;
-          color: #1f2937;
-          margin-bottom: 1rem;
-        }
-
-        .dark-mode .feature-card h3 {
-          color: #f1f5f9;
-        }
-
-        .feature-card p {
-          font-size: 1.1rem;
-          color: #6b7280;
-        }
-
-        .dark-mode .feature-card p {
-          color: #cbd5e1;
-        }
-
-        .shop-by-category {
-          margin: 3rem 0;
-        }
-
-        .shop-heading {
-          font-size: 2.5rem;
-          font-weight: 900;
-          text-align: center;
-          color: #1f2937;
-          margin-bottom: 2rem;
-        }
-
-        .dark-mode .shop-heading {
-          color: #f1f5f9;
-        }
-
-        .category-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 1.5rem;
-        }
-
-        .category-card {
-          position: relative;
-          border-radius: 16px;
-          overflow: hidden;
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .category-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .category-img {
-          width: 100%;
-          height: 180px;
-          object-fit: cover;
-          display: block;
         }
 
         .footer {
@@ -1444,23 +1268,6 @@ export default function App() {
             padding: 2rem 1rem;
           }
 
-          .hero {
-            padding: 4rem 1rem;
-          }
-
-          .hero-content h1 {
-            font-size: 2.5rem;
-          }
-
-          .hero-buttons {
-            flex-direction: column;
-            gap: 1rem;
-          }
-
-          .features {
-            grid-template-columns: 1fr;
-          }
-
           .footer-content {
             flex-direction: column;
             gap: 1rem;
@@ -1481,18 +1288,6 @@ export default function App() {
           }
 
           .logo-icon {
-            font-size: 2rem;
-          }
-
-          .hero-content h1 {
-            font-size: 2rem;
-          }
-
-          .hero-content p {
-            font-size: 1.25rem;
-          }
-
-          .shop-heading {
             font-size: 2rem;
           }
 
