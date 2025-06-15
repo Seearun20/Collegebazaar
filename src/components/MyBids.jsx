@@ -199,9 +199,43 @@ const MyBids = () => {
           color: #ef5350;
         }
 
+        .status-purchased {
+          color: #1e88e5;
+          font-weight: 600;
+        }
+
+        .dark-mode .status-purchased {
+          color: #90caf9;
+        }
+
         .btn.secondary {
           padding: 8px 16px;
           font-size: 0.9rem;
+          background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+          color: #1e88e5;
+          border: none;
+          border-radius: 8px;
+          text-decoration: none;
+          display: inline-block;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(30,136,229,0.3);
+        }
+
+        .btn.secondary:hover {
+          background: linear-gradient(45deg, #bbdefb, #90caf9);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(30,136,229,0.5);
+        }
+
+        .dark-mode .btn.secondary {
+          background: linear-gradient(45deg, #2a2a2a, #3a3a3a);
+          color: #e0e0e0;
+          box-shadow: 0 2px 8px rgba(255,255,255,0.2);
+        }
+
+        .dark-mode .btn.secondary:hover {
+          background: linear-gradient(45deg, #3a3a3a, #4a4a4a);
+          box-shadow: 0 4px 12px rgba(255,255,255,0.3);
         }
 
         .loading, .error {
@@ -262,6 +296,10 @@ const MyBids = () => {
 
           .bids-table {
             font-size: 0.85rem;
+          }
+
+          .status-highest, .status-outbid, .status-purchased {
+            font-size: 0.8rem;
           }
         }
       `}</style>

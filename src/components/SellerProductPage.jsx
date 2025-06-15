@@ -16,6 +16,28 @@ const styles = `
   .dark-mode .product-details p { color: #ccc; }
   .product-details p span { font-weight: 600; color: #2d2d2d; }
   .dark-mode .product-details p span { color: #e0e0e0; }
+  .product-status { display: inline-block; padding: 6px 12px; border-radius: 6px; font-size: 0.95rem; font-weight: 600; text-transform: capitalize; }
+  .status-active { background: #e6ffed; color: #2e7d32; }
+  .status-sold { background: #e3f2fd; color: #1e88e5; }
+  .status-expired { background: #fef2f2; color: #d32f2f; }
+  .status-pending { background: #fff3e0; color: #f57c00; }
+  .dark-mode .status-active { background: #1b5e20; color: #a5d6a7; }
+  .dark-mode .status-sold { background: #1565c0; color: #90caf9; }
+  .dark-mode .status-expired { background: #b71c1c; color: #ef9a9a; }
+  .dark-mode .status-pending { background: #e65100; color: #ffcc80; }
+  /* New styles for buyer section */
+  .buyer-container { background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .dark-mode .buyer-container { background: #2d2d2d; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  .buyer-container h2 { font-size: 1.8rem; font-weight: 700; color: #2d2d2d; margin-bottom: 16px; }
+  .dark-mode .buyer-container h2 { color: #e0e0e0; }
+  .buyer-details { display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #e3f2fd; border-radius: 8px; }
+  .dark-mode .buyer-details { background: #1565c0; }
+  .buyer-field { display: flex; align-items: center; gap: 8px; font-size: 1rem; color: #2d2d2d; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px; }
+  .dark-mode .buyer-field { color: #e0e0e0; border-bottom: 1px solid #444; }
+  .buyer-field span { font-weight: 600; color: #1e88e5; min-width: 100px; }
+  .dark-mode .buyer-field span { color: #90caf9; }
+  .no-buyer { font-size: 1.1rem; color: #555; text-align: center; padding: 16px; background: #f8f9fa; border-radius: 8px; }
+  .dark-mode .no-buyer { color: #ccc; background: #333; }
   .management-container, .bids-container, .queries-container { background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
   .dark-mode .management-container, .dark-mode .bids-container, .dark-mode .queries-container { background: #2d2d2d; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
   .management-container h2, .bids-container h2, .queries-container h2 { font-size: 1.8rem; font-weight: 700; color: #2d2d2d; margin-bottom: 16px; }
@@ -40,6 +62,10 @@ const styles = `
   .bid p, .query p { font-size: 1rem; color: #2d2d2d; margin: 0 0 12px; }
   .dark-mode .bid p, .dark-mode .query p { color: #e0e0e0; }
   .query-actions { display: flex; flex-direction: column; gap: 12px; }
+  .btn.disabled { background: linear-gradient(45deg, #cccccc, #d9d9d9); color: #666666; cursor: not-allowed; box-shadow: none; }
+  .dark-mode .btn.disabled { background: linear-gradient(45deg, #444444, #555555); color: #888888; box-shadow: none; }
+  .btn.disabled:hover { background: linear-gradient(45deg, #cccccc, #d9d9d9); transform: none; box-shadow: none; }
+  .dark-mode .btn.disabled:hover { background: linear-gradient(45deg, #444444, #555555); transform: none; box-shadow: none; }
   .btn { background: linear-gradient(45deg, #ff4757, #ff6b7b); color: #ffffff; padding: 12px 24px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(255,71,87,0.3); }
   .btn:hover { background: linear-gradient(45deg, #ff2e43, #ff5b6b); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,71,87,0.5); }
   .btn.secondary { background: linear-gradient(45deg, #e3f2fd, #bbdefb); color: #1e88e5; box-shadow: 0 2px 8px rgba(30,136,229,0.3); }
@@ -54,8 +80,23 @@ const styles = `
   .dark-mode .btn.danger:hover { background: linear-gradient(45deg, #cc1a36, #e63956); box-shadow: 0 4px 12px rgba(228,30,63,0.5); }
   .loading, .error { text-align: center; padding: 40px; background: #f8f9fa; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 20px; }
   .dark-mode .loading, .dark-mode .error { background: #333; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-  @media (max-width: 768px) { .seller-product-page { margin: 24px 16px; padding: 24px; } .product-container { flex-direction: column; gap: 24px; } .product-image { max-width: 100%; } .product-details h1 { font-size: 1.8rem; } .management-container h2, .bids-container h2, .queries-container h2 { font-size: 1.6rem; } .management-actions { gap: 12px; } .btn { width: 100%; } }
-  @media (max-width: 480px) { .product-details h1 { font-size: 1.6rem; } .product-details p { font-size: 1rem; } .management-container h2, .bids-container h2, .queries-container h2 { font-size: 1.4rem; } input, textarea { font-size: 0.9rem; } .btn { font-size: 0.9rem; padding: 10px; } }
+  @media (max-width: 768px) { 
+    .seller-product-page { margin: 24px 16px; padding: 24px; } 
+    .product-container, .buyer-container { flex-direction: column; gap: 24px; } 
+    .product-image { max-width: 100%; } 
+    .product-details h1, .buyer-container h2 { font-size: 1.8rem; } 
+    .management-container h2, .bids-container h2, .queries-container h2 { font-size: 1.6rem; } 
+    .management-actions { gap: 12px; } 
+    .btn { width: 100%; } 
+    .buyer-field { flex-direction: column; align-items: flex-start; gap: 4px; }
+  }
+  @media (max-width: 480px) { 
+    .product-details h1, .buyer-container h2 { font-size: 1.6rem; } 
+    .product-details p, .buyer-field { font-size: 0.95rem; } 
+    .management-container h2, .bids-container h2, .queries-container h2 { font-size: 1.4rem; } 
+    input, textarea { font-size: 0.9rem; } 
+    .btn { font-size: 0.9rem; padding: 10px; } 
+  }
 `;
 
 const SellerProductPage = () => {
@@ -70,7 +111,9 @@ const SellerProductPage = () => {
     description: 'Loading...',
     price: 0,
     image: '/assets/default.png',
+    status: 'loading',
   });
+  const [buyer, setBuyer] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [editProduct, setEditProduct] = useState({});
   const [editError, setEditError] = useState('');
@@ -112,6 +155,7 @@ const SellerProductPage = () => {
           description: foundProduct.description || 'No description available.',
           price: foundProduct.asking_price || 0,
           image: foundProduct.image || '/assets/default.png',
+          status: foundProduct.status || 'unknown',
         });
         setEditProduct({
           name: foundProduct.name,
@@ -119,6 +163,26 @@ const SellerProductPage = () => {
           asking_price: foundProduct.asking_price || '',
           image: foundProduct.image || '',
         });
+
+        // Fetch buyer details if status is 'sold'
+        if (foundProduct.status === 'sold') {
+          const buyerResponse = await fetch(`http://localhost:5000/api/bid/get-buyer?product_id=${productId}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+            },
+          });
+
+          if (!buyerResponse.ok) {
+            if (buyerResponse.status !== 404) {
+              console.warn(`Failed to fetch buyer: ${buyerResponse.status}`);
+            }
+            setBuyer(null);
+          } else {
+            const buyerData = await buyerResponse.json();
+            setBuyer(buyerData.buyer || null);
+          }
+        }
 
         // Fetch bids
         const bidsResponse = await fetch(`http://localhost:5000/api/bid/product/${productId}`, {
@@ -151,7 +215,6 @@ const SellerProductPage = () => {
           }
         } else {
           const queriesData = await queriesResponse.json();
-          console.log(queriesData);
           setQueries(queriesData.otherQueries || []);
         }
       } catch (err) {
@@ -205,6 +268,7 @@ const SellerProductPage = () => {
         description: updatedProduct.product.description || 'No description available.',
         price: updatedProduct.product.asking_price || 0,
         image: updatedProduct.product.image || '/assets/default.png',
+        status: updatedProduct.product.status || 'unknown',
       });
       setEditSuccess('Product updated successfully!');
       setEditMode(false);
@@ -230,7 +294,7 @@ const SellerProductPage = () => {
         throw new Error(errorData.error || 'Failed to delete product');
       }
 
-      navigate('/seller/dashboard'); // Redirect to seller dashboard or appropriate route
+      navigate('/seller/dashboard');
     } catch (err) {
       console.error('Delete error:', err);
       setError(err.message || 'Failed to delete product.');
@@ -276,6 +340,8 @@ const SellerProductPage = () => {
     }
   };
 
+  const isActive = product.status === 'active';
+
   if (loading) return (
     <main className="seller-product-page">
       <div className="loading">Loading...</div>
@@ -300,8 +366,35 @@ const SellerProductPage = () => {
             <h1>{product.title}</h1>
             <p><span>Description:</span> {product.description}</p>
             <p><span>Asking Price:</span> ₹{product.price.toLocaleString()}</p>
+            <p>
+              <span>Status:</span> 
+              <span className={`product-status status-${product.status.replace('approval-pending', 'pending')}`}>
+                {product.status.replace('approval-pending', 'Pending Approval')}
+              </span>
+            </p>
           </div>
         </section>
+        {/* New Buyer Section */}
+        {product.status === 'sold' && (
+          <section className="buyer-container">
+            <h2>Buyer Details</h2>
+            {buyer ? (
+              <div className="buyer-details">
+                <div className="buyer-field">
+                  <span>Name:</span> {buyer.buyer_name || 'Anonymous'}
+                </div>
+                <div className="buyer-field">
+                  <span>Roll No:</span> {buyer.roll_no || 'N/A'}
+                </div>
+                <div className="buyer-field">
+                  <span>Email:</span> {buyer.email || 'N/A'}
+                </div>
+              </div>
+            ) : (
+              <p className="no-buyer">No buyer details available.</p>
+            )}
+          </section>
+        )}
         <section className="management-container">
           <h2>Manage Product</h2>
           {editMode ? (
@@ -360,8 +453,20 @@ const SellerProductPage = () => {
             </div>
           ) : (
             <div className="management-actions">
-              <button className="btn" onClick={() => setEditMode(true)}>Edit Product</button>
-              <button className="btn danger" onClick={deleteProduct}>Delete Product</button>
+              <button 
+                className={`btn ${!isActive ? 'disabled' : ''}`} 
+                onClick={() => isActive && setEditMode(true)} 
+                disabled={!isActive}
+              >
+                Edit Product
+              </button>
+              <button 
+                className={`btn danger ${!isActive ? 'disabled' : ''}`} 
+                onClick={() => isActive && deleteProduct()} 
+                disabled={!isActive}
+              >
+                Delete Product
+              </button>
             </div>
           )}
         </section>

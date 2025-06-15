@@ -16,6 +16,16 @@ const styles = `
   .dark-mode .product-details p { color: #ccc; }
   .product-details p span { font-weight: 600; color: #2d2d2d; }
   .dark-mode .product-details p span { color: #e0e0e0; }
+  /* New styles for status display */
+  .product-status { display: inline-block; padding: 6px 12px; border-radius: 6px; font-size: 0.95rem; font-weight: 600; text-transform: capitalize; }
+  .status-active { background: #e6ffed; color: #2e7d32; }
+  .status-sold { background: #e3f2fd; color: #1e88e5; }
+  .status-expired { background: #fef2f2; color: #d32f2f; }
+  .status-pending { background: #fff3e0; color: #f57c00; }
+  .dark-mode .status-active { background: #1b5e20; color: #a5d6a7; }
+  .dark-mode .status-sold { background: #1565c0; color: #90caf9; }
+  .dark-mode .status-expired { background: #b71c1c; color: #ef9a9a; }
+  .dark-mode .status-pending { background: #e65100; color: #ffcc80; }
   .bidding-container, .comments-container { background: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
   .dark-mode .bidding-container, .dark-mode .comments-container { background: #2d2d2d; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
   .bidding-container h2, .comments-container h2 { font-size: 1.8rem; font-weight: 700; color: #2d2d2d; margin-bottom: 16px; }
@@ -67,7 +77,7 @@ const styles = `
     .product-details h1 { font-size: 1.6rem; } 
     .product-details p { font-size: 1rem; } 
     .bidding-container h2, .comments-container h2 { font-size: 1.4rem; } 
-    input, textarea { font-size: 0.9rem; } 
+    .input, textarea { font-size: 0.9rem; } 
     .btn { font-size: 0.9rem; padding: 10px; } 
     .reply { font-size: 0.85rem; margin-left: 8px; padding-left: 6px; }
   }
@@ -84,6 +94,7 @@ const ProductPage = () => {
     description: 'Loading...',
     price: 0,
     image: '/assets/default.png',
+    status: 'loading', // Added status to state
   });
   const [currentBid, setCurrentBid] = useState(0);
   const [bidAmount, setBidAmount] = useState('');
@@ -127,6 +138,7 @@ const ProductPage = () => {
           description: foundProduct.description || 'No description available.',
           price: foundProduct.asking_price || 0,
           image: foundProduct.image || '/assets/default.png',
+          status: foundProduct.status || 'unknown', // Added status from API
         });
 
         // Fetch the highest bid
@@ -327,6 +339,9 @@ const ProductPage = () => {
     }
   };
 
+  // Check if product is in a state where bidding/querying is allowed
+  const isActive = product.status === 'active';
+
   if (loading) return (
     <main className="product-page">
       <div className="loading">Loading...</div>
@@ -354,43 +369,56 @@ const ProductPage = () => {
               ? `₹${currentBid.toLocaleString()}`
               : currentBid}</p>
             <p><span>Asking Price:</span> ₹{product.price.toLocaleString()}</p>
+            {/* Display product status */}
+            <p>
+              <span>Status:</span> 
+              <span className={`product-status status-${product.status.replace('approval-pending', 'pending')}`}>
+                {product.status.replace('approval-pending', 'Pending Approval')}
+              </span>
+            </p>
           </div>
         </section>
-        <section className="bidding-container">
-          <h2>Place Your Bid</h2>
-          <p>Current Highest Bid: {typeof currentBid === 'number'
-            ? `₹${currentBid.toLocaleString()}`
-            : currentBid}</p>
-          <div className="bidding-actions">
-            <input
-              type="number"
-              placeholder="Enter your bid (₹)"
-              min="0"
-              step="0.01"
-              value={bidAmount}
-              onChange={(e) => { setBidAmount(e.target.value); setBidError(''); setBidSuccess(''); }}
-              className={bidError ? 'error' : ''}
-              disabled={bidLoading}
-            />
-            <button className="btn" onClick={placeBid} disabled={bidLoading}>
-              {bidLoading ? 'Placing Bid...' : 'Place Bid'}
-            </button>
-          </div>
-          {bidError && <p className="error-message">{bidError}</p>}
-          {bidSuccess && <p className="success-message">{bidSuccess}</p>}
-        </section>
+        {/* Show bidding section only if status is active */}
+        {isActive && (
+          <section className="bidding-container">
+            <h2>Place Your Bid</h2>
+            <p>Current Highest Bid: {typeof currentBid === 'number'
+              ? `₹${currentBid.toLocaleString()}`
+              : currentBid}</p>
+            <div className="bidding-actions">
+              <input
+                type="number"
+                placeholder="Enter your bid (₹)"
+                min="0"
+                step="0.01"
+                value={bidAmount}
+                onChange={(e) => { setBidAmount(e.target.value); setBidError(''); setBidSuccess(''); }}
+                className={bidError ? 'error' : ''}
+                disabled={bidLoading}
+              />
+              <button className="btn" onClick={placeBid} disabled={bidLoading}>
+                {bidLoading ? 'Placing Bid...' : 'Place Bid'}
+              </button>
+            </div>
+            {bidError && <p className="error-message">{bidError}</p>}
+            {bidSuccess && <p className="success-message">{bidSuccess}</p>}
+          </section>
+        )}
         <section className="comments-container">
-          <h2>Post Your Query / Comment</h2>
-          <div className="comment-actions">
-            <textarea
-              placeholder="Type your query or comment..."
-              value={commentInput}
-              onChange={(e) => { setCommentInput(e.target.value); setCommentError(''); }}
-              rows="4"
-              className={commentError ? 'error' : ''}
-            />
-            <button className="btn" onClick={postComment}>Post Query</button>
-          </div>
+          <h2>Queries / Comments</h2>
+          {/* Show comment input only if status is active */}
+          {isActive && (
+            <div className="comment-actions">
+              <textarea
+                placeholder="Type your query or comment..."
+                value={commentInput}
+                onChange={(e) => { setCommentInput(e.target.value); setCommentError(''); }}
+                rows="4"
+                className={commentError ? 'error' : ''}
+              />
+              <button className="btn" onClick={postComment}>Post Query</button>
+            </div>
+          )}
           {commentError && <p className="error-message">{commentError}</p>}
           <div className="comments-list">
             {userQueries.length === 0 && otherQueries.length === 0 ? (
