@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { API_URL } from '../config.js';
 
 export default function Post() {
   const [formData, setFormData] = useState({
@@ -97,7 +98,7 @@ export default function Post() {
 
     try {
       const productRes = await axios.post(
-        'http://localhost:5000/api/seller/add-product',
+        API_URL + '/api/seller/add-product',
         {
           name: formData.name,
           description: formData.description,
@@ -119,7 +120,7 @@ export default function Post() {
         images.forEach(img => imgForm.append('images', img));
 
         await axios.post(
-          `http://localhost:5000/api/images/${product_id}`,
+          API_URL + `/api/images/${product_id}`,
           imgForm,
           {
             headers: {

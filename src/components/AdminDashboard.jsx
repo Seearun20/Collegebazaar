@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config.js';
 
 const styles = `
   .admin-page { max-width: 1200px; margin: 40px auto; padding: 32px; background: linear-gradient(180deg, #ffffff, #f8f9fa); border-radius: 16px; box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
@@ -68,7 +69,7 @@ const AdminDashboard = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/admin/login', {
+      const response = await fetch(API_URL + '/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -96,7 +97,7 @@ const AdminDashboard = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/admin/approval-pending-products', {
+      const response = await fetch(API_URL + '/api/admin/approval-pending-products', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken') || ''}`,
@@ -121,7 +122,7 @@ const AdminDashboard = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/admin/approve-product', {
+      const response = await fetch(API_URL + '/api/admin/approve-product', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +149,7 @@ const AdminDashboard = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/admin/approve-product', {
+      const response = await fetch(API_URL + '/api/admin/approve-product', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

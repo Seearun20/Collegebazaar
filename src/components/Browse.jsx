@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { API_URL } from '../config.js';
 
 export default function Browse() {
   const location = useLocation();
@@ -23,8 +24,8 @@ export default function Browse() {
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout
-
-        const response = await fetch('http://localhost:5000/api/seller/get-active-products', {
+        console.log(API_URL + '/api/seller/get-active-products');
+        const response = await fetch(API_URL + '/api/seller/get-active-products', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,

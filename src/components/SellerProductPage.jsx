@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { API_URL } from '../config.js';
 
 const styles = `
   .seller-product-page { max-width: 1000px; margin: 40px auto; padding: 32px; background: linear-gradient(180deg, #ffffff, #f8f9fa); border-radius: 16px; box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
@@ -132,7 +133,7 @@ const SellerProductPage = () => {
         setError(null);
 
         // Fetch product details
-        const productResponse = await fetch(`http://localhost:5000/api/seller/get-product-by-id/${productId}`, {
+        const productResponse = await fetch(API_URL + `/api/seller/get-product-by-id/${productId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -166,7 +167,7 @@ const SellerProductPage = () => {
 
         // Fetch buyer details if status is 'sold'
         if (foundProduct.status === 'sold') {
-          const buyerResponse = await fetch(`http://localhost:5000/api/bid/get-buyer?product_id=${productId}`, {
+          const buyerResponse = await fetch(API_URL + `/api/bid/get-buyer?product_id=${productId}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -185,7 +186,7 @@ const SellerProductPage = () => {
         }
 
         // Fetch bids
-        const bidsResponse = await fetch(`http://localhost:5000/api/bid/product/${productId}`, {
+        const bidsResponse = await fetch(API_URL + `/api/bid/product/${productId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -200,7 +201,7 @@ const SellerProductPage = () => {
         setBids(bidsData.bids || []);
 
         // Fetch queries
-        const queriesResponse = await fetch(`http://localhost:5000/api/query/${productId}`, {
+        const queriesResponse = await fetch(API_URL + `/api/query/${productId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -242,7 +243,7 @@ const SellerProductPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/seller/edit-product/${productId}`, {
+      const response = await fetch(API_URL + `/api/seller/edit-product/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -282,7 +283,7 @@ const SellerProductPage = () => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/seller/delete-product/${productId}`, {
+      const response = await fetch(API_URL + `/api/seller/delete-product/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -309,7 +310,7 @@ const SellerProductPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/query/respond/${queryId}`, {
+      const response = await fetch(API_URL + `/api/query/respond/${queryId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

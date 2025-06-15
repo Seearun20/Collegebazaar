@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { API_URL } from '../config.js';
 
 const styles = `
   .product-page { max-width: 1000px; margin: 40px auto; padding: 32px; background: linear-gradient(180deg, #ffffff, #f8f9fa); border-radius: 16px; box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
@@ -115,7 +116,7 @@ const ProductPage = () => {
         setError(null);
 
         // Fetch product details
-        const productResponse = await fetch(`http://localhost:5000/api/seller/get-product-by-id/${productId}`, {
+        const productResponse = await fetch(API_URL +`/api/seller/get-product-by-id/${productId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -142,7 +143,7 @@ const ProductPage = () => {
         });
 
         // Fetch the highest bid
-        const highestBidResponse = await fetch(`http://localhost:5000/api/bid/product/${foundProduct.product_id}/highest`, {
+        const highestBidResponse = await fetch(API_URL +`/api/bid/product/${foundProduct.product_id}/highest`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -159,7 +160,7 @@ const ProductPage = () => {
         }
 
         // Fetch queries
-        const queryResponse = await fetch(`http://localhost:5000/api/query/${foundProduct.product_id}`, {
+        const queryResponse = await fetch(API_URL +`/api/query/${foundProduct.product_id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -208,7 +209,7 @@ const ProductPage = () => {
     }
 
     try {
-      const bidResponse = await fetch(`http://localhost:5000/api/bid/place-bid/${product.id}`, {
+      const bidResponse = await fetch(API_URL +`/api/bid/place-bid/${product.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -223,7 +224,7 @@ const ProductPage = () => {
       }
 
       // Fetch updated highest bid
-      const highestBidResponse = await fetch(`http://localhost:5000/api/bid/product/${product.id}/highest`, {
+      const highestBidResponse = await fetch(API_URL +`/api/bid/product/${product.id}/highest`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -256,7 +257,7 @@ const ProductPage = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/query/${product.id}`, {
+      const response = await fetch(API_URL +`/api/query/${product.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -290,7 +291,7 @@ const ProductPage = () => {
     const newComment = prompt('Edit your query:', comment.query);
     if (newComment && newComment.trim()) {
       try {
-        const response = await fetch(`http://localhost:5000/api/query/edit/${comment.query_id}`, {
+        const response = await fetch(API_URL +`/api/query/edit/${comment.query_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -321,7 +322,7 @@ const ProductPage = () => {
     if (window.confirm('Are you sure you want to delete this query?')) {
       const comment = userQueries[index];
       try {
-        const response = await fetch(`http://localhost:5000/api/query/delete/${comment.query_id}`, {
+        const response = await fetch(API_URL +`/api/query/delete/${comment.query_id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,

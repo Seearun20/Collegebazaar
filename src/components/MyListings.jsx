@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config.js';
 
 export default function MyListings() {
   const [products, setProducts] = useState([]);
@@ -18,7 +19,7 @@ export default function MyListings() {
           throw new Error('Please log in to view your listings');
         }
 
-        const response = await fetch('http://localhost:5000/api/seller/my-listings', {
+        const response = await fetch(API_URL + '/api/seller/my-listings', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:5000/api/products";
+import { API_URL } from '../config.js';
+const BASE_URL = API_URL + "/api/products";
 
 export async function getProductByName(name) {
   try {

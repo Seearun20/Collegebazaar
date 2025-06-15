@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { API_URL } from '../config.js';
 
 const MyBids = () => {
   const [bids, setBids] = useState([]);
@@ -12,7 +13,7 @@ const MyBids = () => {
         setLoading(true);
         setError('');
 
-        const response = await fetch('http://localhost:5000/api/bid/my-bids', {
+        const response = await fetch(API_URL + '/api/bid/my-bids', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
