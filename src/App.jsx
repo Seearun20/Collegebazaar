@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, NavLink, Link, Navigate, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import Home from './components/Home';
 import Browse from './components/Browse';
@@ -355,7 +355,10 @@ export default function App() {
       <footer className="footer">
         <div className="footer-content">
           <p>© 2025 CollegeBazaar. All rights reserved.</p>
-          <button onClick={toggleContactPopup} className="contact-link">Contact Us</button>
+          <div className="footer-links">
+            <button onClick={toggleContactPopup} className="contact-link">Contact Us</button>
+            <Link to="/admin" className="contact-link">Admin Dashboard</Link>
+          </div>
         </div>
       </footer>
 
@@ -1500,6 +1503,50 @@ export default function App() {
             padding: 1.5rem;
           }
         }
+
+        .footer-links {
+          display: flex;
+          gap: 24px; /* Increased spacing between links */
+          align-items: center;
+        }
+        
+        .footer-links .contact-link {
+          background: none;
+          border: none;
+          color: #007bff;
+          text-decoration: none;
+          cursor: pointer;
+          font-size: 1rem;
+          font-weight: 500;
+          padding: 8px 12px;
+          transition: color 0.3s ease, text-decoration 0.3s ease;
+          line-height: 1.5;
+        }
+        
+        .footer-links .contact-link:hover {
+          color: #0056b3;
+          text-decoration: underline;
+        }
+        
+        .dark-mode .footer-links .contact-link {
+          color: #90caf9;
+        }
+        
+        .dark-mode .footer-links .contact-link:hover {
+          color: #64b5f6;
+          text-decoration: underline;
+        }
+        
+        /* Ensure button and Link render identically */
+        .footer-links button.contact-link,
+        .footer-links a.contact-link {
+          display: inline-block;
+          text-align: center;
+          appearance: none; /* Remove default button styling */
+          -webkit-appearance: none;
+          -moz-appearance: none;
+        }
+        
       `}</style>
     </div>
   );
